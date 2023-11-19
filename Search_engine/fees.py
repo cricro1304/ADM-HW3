@@ -1,22 +1,30 @@
 import regex as re
 
 def trova_simboli_e_valori(testo):
-    pattern = regex.compile(r'(\p{Sc})\s*([0-9,]+(?:\.\d{1,2})?)', re.UNICODE)
+    pattern = re.compile(r'(\p{Sc})?(\d+(?:,\d{3})*(?:\.\d{1,2})?)(?(1)|\s*(\p{Sc}))', re.UNICODE)
     risultati = pattern.findall(testo)
-    risultati_list = [[simbolo, float(valore.replace(',', ''))] for simbolo, valore in risultati]
+    
+    # Crea una lista di tuple contenenti sia il simbolo di valuta che il valore numerico
+    risultati_list = []
+    for match in risultati:
+        # Se il primo gruppo di cattura è vuoto, usa il terzo gruppo
+        simbolo = match[0] if match[0] else match[2]
+        
+        # Converti il valore in float
+        valore = float(match[1].replace(',', ''))
+        
+        risultati_list.append([simbolo, valore])
+    
     return risultati_list
 
+# Esempio di utilizzo
+testo_di_esempio = "UK Students Full time: £9750 for the 2022/202300 academic year Part time: £1580 per 15 credits for the Individual Research Project for the 2022/2023 academic year EU Students Full time: £14750 for the 2022/2023 academic year Part time: £1230 per 15 credits for the 2022/2023 academic year"
+risultati = trova_simboli_e_valori(testo_di_esempio)
 
-esempio = "Il prezzo è di $1000, $500.50 e $3000.75. e $400"
-risultati = trova_simboli_e_valori(esempio)
-print(risultati)
 print("Simboli di valute e valori numerici trovati:")
 for simbolo, valore in risultati:
     print(f"{simbolo}: {valore}")
 
-max_val = float(max(risultati, key=lambda x: x[1])[1])
-valuta_max_val=max(risultati, key=lambda x: x[1])[0]
+max_val = max(risultati, key=lambda x: x[1])[1]
 
-print(max_val)
-print(valuta_max_val)
-print(str(valuta_max_val)+str(max_val))
+print(f"Il massimo degli elementi in posizione 1 è: {max_val}")
