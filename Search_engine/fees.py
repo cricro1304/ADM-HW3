@@ -18,7 +18,7 @@ def trova_simboli_e_valori(testo):
     return risultati_list
 
 # Esempio 
-testo_di_esempio = "UK Students Full time: £9750 for the 2022/202300 academic year Part time: £1580 per 15 credits for the Individual Research Project for the 2022/2023 academic year EU Students Full time: £14750 for the 2022/2023 academic year Part time: £1230 per 15 credits for the 2022/2023 academic year"
+testo_di_esempio = "UK Students Full time: 97500£ for the 2022/202300 academic year Part time: £1580 per 15 credits for the Individual Research Project for the 2022/2023 academic year EU Students Full time: £14750 for the 2022/2023 academic year Part time: £1230 per 15 credits for the 2022/2023 academic year"
 risultati = trova_simboli_e_valori(testo_di_esempio)
 
 print("Simboli di valute e valori numerici trovati:")
