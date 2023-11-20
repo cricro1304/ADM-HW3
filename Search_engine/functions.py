@@ -22,25 +22,36 @@ with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\vocabul
 with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\inverted_index.pkl", 'rb') as file:
     inverted_index = pickle.load(file)
 
-
-
-def search_engine_1(df, inverted_index, vocabulary):
+    
+    
+def preprocess_query(query):
     '''
-
-    :param df: the original dataframe
-    :param inverted_index: it's a dictionary
-    :param vocabulary: it's a dictionary
-    :return: the dataframe with only the courses whose descriptions contain all the terms in the query
+    
+    :param query: the query string
+    :return: a list with all the preprocessed term in the query
+    
     '''
-
-    query = input('Make a query: ')
-
     # Preprocess the query
     tokenizer = RegexpTokenizer(r'\w+')
     query = tokenizer.tokenize(query)
     stemmer = PorterStemmer()
     query = [stemmer.stem(word) for word in query if not word in lst_stopwords]
+    
+    return query
 
+def search_engine_1(query, df, inverted_index, vocabulary):
+    '''
+
+    :param query: the query string
+    :param df: the original dataframe
+    :param inverted_index: it's a dictionary
+    :param vocabulary: it's a dictionary
+    :return: the dataframe with only the courses whose descriptions contain all the terms in the query
+    '''
+    
+    # Preprocess the query
+    query = preprocess_query(query)
+    
     conjunctive_list = inverted_index[vocabulary[query[0]]]  # initialize the conjunctive query list
     for term in query:
         if term in vocabulary:
