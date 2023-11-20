@@ -25,9 +25,11 @@ df['list_of_words'] = list_of_words
 df['list_of_words'] = df['list_of_words'].apply(literal_eval)
 
 
-def search_engine_2(query, df, vocabulary, inverted_index, tfidf_inverted_index, top_k = 5):
+def search_engine_2(df, vocabulary, inverted_index, tfidf_inverted_index, top_k = 5):
     '''
-    :param query: the query string
+    The function computes the (fast) cosine similarity for each pair (query,document) and returns the top k according to this score.
+    Reference for the fast cosine similarity:  "An introduction to Information Retrieval" by D. Manning, Raghavan, Schütze, Chp. 7
+
     :param df: the original dataframe
     :param vocabulary: the dictionary that maps terms in term_id
     :param inverted_index:
@@ -36,8 +38,8 @@ def search_engine_2(query, df, vocabulary, inverted_index, tfidf_inverted_index,
     :return: a dataframe with the top k docs according to the (fast) cosine similarity score
 
     '''
+    conjunctive_df, query = search_engine_1(df, inverted_index, vocabulary)
     list_query_term = preprocess_query(query)
-    conjunctive_df = search_engine_1(query, df, inverted_index, vocabulary)
     conjunctive_idx = conjunctive_df.index
     conjunctive_doc_list_descriptions = df.loc[conjunctive_idx, 'list_of_words']
 
