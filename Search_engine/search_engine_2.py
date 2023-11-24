@@ -11,14 +11,14 @@ import functions
 from functions import preprocess_query,search_engine_1
 
 #import the data frame, the vocabulary, the inverted_index and the tfidf inverted_index
-df = pd.read_csv(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\df.csv")
-list_of_words = pd.read_csv(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\df_list_of_words.csv")
-with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\vocabulary.pkl", 'rb') as file:
-    vocabulary = pickle.load(file)
-with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\inverted_index.pkl", 'rb') as file:
-    inverted_index = pickle.load(file)
-with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\new_inverted_index.pkl", 'rb') as file:
-    tfidf_inverted_index = pickle.load(file)    #now this is the tfidf inverted index
+#df = pd.read_csv(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\df.csv")
+#list_of_words = pd.read_csv(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\df_list_of_words.csv")
+#with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\vocabulary.pkl", 'rb') as file:
+#    vocabulary = pickle.load(file)
+#with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\inverted_index.pkl", 'rb') as file:
+#    inverted_index = pickle.load(file)
+#with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\new_inverted_index.pkl", 'rb') as file:
+#    tfidf_inverted_index = pickle.load(file)    #now this is the tfidf inverted index
 
 
     
