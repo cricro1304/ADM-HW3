@@ -24,11 +24,13 @@ def extract_msc_page(base_dir, output_dir):
 
             page_soup = BeautifulSoup(html_content, 'html.parser')
 
-            url = page_soup.find('link', rel='canonical')
-            if url:
-                contents['url'] = url['href']
+            # course name
+
+            name = page_soup.find('h1', {'class': 'course-header__course-title'})
+            if name:
+                contents['courseName'] = name.get_text(strip=True)
             else:
-                contents['urls'] = None
+                contents['courseName'] = None
 
             # university name
 
@@ -46,14 +48,6 @@ def extract_msc_page(base_dir, output_dir):
             else:
                 contents['facultyName'] = None
 
-            # course name
-
-            name = page_soup.find('h1', {'class': 'course-header__course-title'})
-            if name:
-                contents['courseName'] = name.get_text(strip=True)
-            else:
-                contents['courseName'] = None
-
             # full/part time
 
             FullTime_links = page_soup.find_all('a', {'class': 'concealLink'})
@@ -62,7 +56,7 @@ def extract_msc_page(base_dir, output_dir):
                 if item['href'] == "/masters-degrees/full-time/":
                     FullTime = True
                     break
-            contents['fullTime'] = FullTime
+            contents['isItFullTime'] = FullTime
 
             # description
 
@@ -136,6 +130,12 @@ def extract_msc_page(base_dir, output_dir):
                 contents['administration'] = administration.get_text()
             else:
                 contents['administration'] = None
+
+            url = page_soup.find('link', rel='canonical')
+            if url:
+                contents['url'] = url['href']
+            else:
+                contents['url'] = None
 
             tsv_filename = os.path.join(output_dir, f'course_{counter}.tsv')
 
