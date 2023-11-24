@@ -54,11 +54,14 @@ def preprocess_query(query):
     '''
     # Preprocess the query
     tokenizer = RegexpTokenizer(r'\w+')
-    query = tokenizer.tokenize(query)
+    #query = tokenizer.tokenize(query)
+    query = ' '.join(tokenizer.tokenize(str(query))) if isinstance(query, str) else query
     stemmer = PorterStemmer()
-    query = [stemmer.stem(word) for word in query if not word in lst_stopwords]
+    query = ' '.join([stemmer.stem(word) for word in str(query).split(' ') if not word in lst_stopwords])
+    query = [word for word in query.split(' ')]
     
     return query
+
 
 def search_engine_1(df, inverted_index, vocabulary):
     '''

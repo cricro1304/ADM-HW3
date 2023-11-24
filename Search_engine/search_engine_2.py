@@ -4,6 +4,7 @@ import nltk
 import pickle
 from ast import literal_eval
 import math
+import heapq
 
 
 import functions
@@ -19,10 +20,16 @@ with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\inverte
 with open(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\new_inverted_index.pkl", 'rb') as file:
     tfidf_inverted_index = pickle.load(file)    #now this is the tfidf inverted index
 
-#Add a column to the df with the list of preprocessed query for each doc
-df['list_of_words'] = list_of_words
-#Convert the strings representing lists of terms to actual lists
-df['list_of_words'] = df['list_of_words'].apply(literal_eval)
+
+    
+## Since the min-heap is the python default, we implement a max-heap with the following function
+
+def create_max_heap_from_dict(data):
+    negated_data = [(-value, key) for key, value in data.items()]
+    heapq.heapify(negated_data)
+    return negated_data
+
+
 
 
 def search_engine_2(df, vocabulary, inverted_index, tfidf_inverted_index, top_k = 5):
@@ -36,6 +43,7 @@ def search_engine_2(df, vocabulary, inverted_index, tfidf_inverted_index, top_k 
     :param tfidf_inverted_index: the complete dictionary with as keys the term_id and as values a list of tuples (doc_id, tfidf)
     :param top_k: the number of doc the function will retrieve. Default value = 5
     :return: a dataframe with the top k docs according to the (fast) cosine similarity score
+             and the dictionary with the doc_id as keys and score similarity as values
 
     '''
     conjunctive_df, query = search_engine_1(df, inverted_index, vocabulary)
@@ -95,10 +103,13 @@ def search_engine_2(df, vocabulary, inverted_index, tfidf_inverted_index, top_k 
     # Extract the top k docs if number of docs > k
     if len(sorted_similarity_scores):
         sorted_similarity_scores = dict(list(sorted_similarity_scores.items())[:top_k])
-
+    
+    # Store the top_k documents in a max-heap structure
+    topk_heap = create_max_heap_from_dict(sorted_similarity_scores)
+    
     # Retrieve the corresponding dataframe of the documents
     top_idx = list(sorted_similarity_scores.keys())
     topk_df = conjunctive_df.loc[top_idx].copy()
     topk_df['Similarity'] = topk_df.index.map(sorted_similarity_scores.get)
     topk_df = topk_df.sort_values(by='Similarity', ascending=False)
-    return topk_df
+    return topk_df,topk_heap
