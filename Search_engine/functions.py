@@ -127,3 +127,34 @@ def tfidf(df,inverted_index,vocabulary):
         new_tfidf_dict[term_id] = term_tfidf_values
 
     return new_tfidf_dict
+
+
+
+# a modified search_engine for part 3 that returns also other columns
+def search_engine_part3(df, inverted_index, vocabulary):
+    '''
+    :param df: the original dataframe
+    :param inverted_index: it's a dictionary
+    :param vocabulary: it's a dictionary
+    :return: the dataframe with only the courses whose descriptions contain all the terms in the query
+             and the query string (for practical reason)
+    '''
+
+    #Ask for the query
+    query_string = input('Make a query: ')
+
+    # Preprocess the query
+    query = preprocess_query(query_string)
+    
+    conjunctive_list = inverted_index[vocabulary[query[0]]]  # initialize the conjunctive query list
+    for term in query:
+        if term in vocabulary:
+            term_id = vocabulary[term]
+            term_list = inverted_index[term_id]
+            conjunctive_list = set(conjunctive_list).intersection(set(term_list))
+        else:
+            print("Not all terms are in the course's descriptions")
+            return False
+    columns_to_select = ['courseName', 'universityName', 'courseDescription', 'url','fees_eur','Ranking']
+    doc_found = df.loc[list(conjunctive_list), columns_to_select].copy()
+    return doc_found, query_string
