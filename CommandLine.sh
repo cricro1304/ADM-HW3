@@ -8,5 +8,5 @@ awk -F'\t' '$5=="False" {count++} END {print count}' new_merged_file.tsv
 
 total_courses=$(awk -F'\t' 'NR>1' new_merged_file.tsv | wc -l)
 engineering_courses=$(awk -F'\t' 'NR>1 && tolower($4) ~ /engineer/' new_merged_file.tsv | wc -l)
-percentage=$(engineering_courses * 100 / total_courses)
+percentage=$(echo "$engineering_courses * 100 / $total_courses" | bc -l)
 echo $percentage
