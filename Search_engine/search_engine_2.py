@@ -117,8 +117,38 @@ def search_engine_2(df, vocabulary, inverted_index, tfidf_inverted_index, top_k 
 
 
 
+## Part 3
+
+
+#The new score functions
+
+def replace_nan_with_zero(valore):
+    if np.isnan(valore):
+        return 0
+    else:
+        return valore
+
+    
+def f2(x):
+    if isinstance(x,float):
+        return 1/x
+
+def min_fees(df):
+    non_zero_values = df[df['fees_eur'] > 1]['fees_eur']
+    minimum_non_zero = non_zero_values.min()
+    return minimum_non_zero
+
+
+def f3(x,minimum):
+
+    if x==0:
+        x=0.00001
+    elif isinstance(x,float):
+        return minimum/x
+    
+    
 # a modified search_engine 2 for Part 3 that doesn't take the top_k and returns also other columns
-def search_engine_2_part3(df, vocabulary, inverted_index, tfidf_inverted_index):
+def search_engine_2_part3(df, vocabulary, inverted_index, tfidf_inverted_index, top_k = 5):
     '''
     The function computes the (fast) cosine similarity for each pair (query,document) and returns the top k according to this score.
     Reference for the fast cosine similarity:  "An introduction to Information Retrieval" by D. Manning, Raghavan, Schütze, Chp. 7
@@ -192,9 +222,26 @@ def search_engine_2_part3(df, vocabulary, inverted_index, tfidf_inverted_index):
     # Store the top_k documents in a max-heap structure
     #topk_heap = create_max_heap_from_dict(sorted_similarity_scores)
     
-    # Retrieve the corresponding dataframe of the documents
+    # Adding a new column with the cosine similarity
     filtered_df_idx = list(similarity_scores.keys())
     filtered_df = conjunctive_df.loc[filtered_df_idx].copy()
     filtered_df['Similarity'] = filtered_df.index.map(similarity_scores.get)
-    filtered_df = filtered_df.sort_values(by='Similarity', ascending=False)
-    return filtered_df
+    
+    #Compute our new scores
+    filtered_df['new_score']=0.6*filtered_df['Similarity']+0.35*filtered_df['score_ranking']+0.05*filtered_df['score_fees']
+    
+    # Sort the df according to our new score
+    filtered_df = filtered_df.sort_values(by='new_score', ascending=False)
+    
+    # Extract the top k doc
+    filtered_df = filtered_df.head(top_k)
+    
+    # Build a dictionary with indexes as keys and 'new_score' values as values
+    index_score_dict = filtered_df['new_score'].to_dict()
+    
+    # Store the top_k documents in a max-heap structure
+    topk_heap = create_max_heap_from_dict(index_score_dict)
+    
+    
+    #filtered_df = filtered_df.sort_values(by='Similarity', ascending=False)
+    return filtered_df,topk_heap
