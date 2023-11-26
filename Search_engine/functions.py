@@ -3,6 +3,7 @@ import numpy as np
 import nltk
 import pickle
 import math
+from ast import literal_eval
 
 #nltk library for tokenization, stemming and removing punctuation
 from nltk.tokenize import RegexpTokenizer
@@ -44,7 +45,28 @@ def change_columns(df):
     return df
 
 
+def build_df(df,directory_path):
+    #list_of_words = pd.read_csv(r"C:\Users\kkfam\Desktop\DATA_SCIENCE\ADM\HOMEWORKS\HOMEWORK_3\df_list_of_words.csv")
+    list_of_words = pd.read_csv(directory_path + 'df_list_of_words.csv')
+    #Add a column to the df with the list of preprocessed query for each doc
+    df['list_of_words'] = list_of_words
+    #Convert the strings representing lists of terms to actual lists
+    df['list_of_words'] = df['list_of_words'].apply(literal_eval)
+    return df
 
+
+# Function to update inverted index for each row
+def update_inverted_index(row,inverted_index):
+        
+    document_id = row.name  # Get the document ID (DataFrame index)
+    terms = row['list_of_words']
+    for term in terms:
+        term_id = vocabulary.get(term)
+        if term_id is not None:
+            if document_id not in inverted_index[term_id]:
+                inverted_index[term_id].append(document_id)
+
+                
 def preprocess_query(query):
     '''
     
@@ -155,6 +177,6 @@ def search_engine_part3(df, inverted_index, vocabulary):
         else:
             print("Not all terms are in the course's descriptions")
             return False
-    columns_to_select = ['courseName', 'universityName', 'courseDescription', 'url','fees_eur','Ranking']
+    columns_to_select = ['courseName', 'universityName', 'courseDescription', 'url','score_fees','score_ranking','fees_eur','Ranking']
     doc_found = df.loc[list(conjunctive_list), columns_to_select].copy()
     return doc_found, query_string
